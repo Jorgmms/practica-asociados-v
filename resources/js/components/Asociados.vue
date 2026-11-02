@@ -15,6 +15,8 @@
         </div>
 
         <!-- Tabla de asociados -->
+         <div class="mb-4">
+            <input type="text" placeholder="Buscar asociado..." class="border p-2 rounded w-full"></div>
         <div class="bg-white p-6 rounded-lg shadow-md">
             <table class="w-full text-left border-collapse">
                 <thead>
