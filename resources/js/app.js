@@ -1,8 +1,12 @@
 import { createApp } from 'vue';
-import Asociados from './components/Asociados.vue';
+import router from './index.js';
+import App from './components/App.vue';
 
-const app = createApp({});
+// Creamos la app usando App.vue como base
+const app = createApp(App); 
 
-app.component('asociados', Asociados);
+// Activamos el router
+app.use(router); 
 
+// Montamos la app en el div con id="app"
 app.mount('#app');

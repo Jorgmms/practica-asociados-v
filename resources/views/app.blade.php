@@ -8,7 +8,7 @@
 </head>
 <body class="bg-gray-100">
     <div id="app">
-        <asociados></asociados>
+        <!-- Vue Router cargará todo aquí -->
     </div>
 </body>
 </html>
