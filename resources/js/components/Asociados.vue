@@ -35,8 +35,9 @@
                         <td class="p-3">{{ asociado.correo }}</td>
                         <td class="p-3">{{ asociado.telefono }}</td>
                         <td class="p-3">
-                            <button @click="eliminarAsociado(asociado.id)" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Eliminar</button>
-                        </td>
+    <button class="bg-yellow-500 text-white px-3 py-1 rounded mr-2">Editar</button>
+    <button @click="eliminarAsociado(asociado.id)" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Eliminar</button>
+</td>
                     </tr>
                     <tr v-if="asociados.length === 0">
                         <td colspan="6" class="text-center p-4 text-gray-500">No hay asociados registrados.</td>
