@@ -15,6 +15,8 @@
         </div>
 
         <!-- Tabla de asociados -->
+         <div class="mb-4">
+            <input type="text" placeholder="Buscar asociado..." class="border p-2 rounded w-full"></div>
         <div class="bg-white p-6 rounded-lg shadow-md">
             <table class="w-full text-left border-collapse">
                 <thead>
@@ -35,7 +37,7 @@
                         <td class="p-3">{{ asociado.correo }}</td>
                         <td class="p-3">{{ asociado.telefono }}</td>
                         <td class="p-3">
-    <button class="bg-yellow-500 text-white px-3 py-1 rounded mr-2">Editar</button>
+    <button @click="editarAsociado(asociado)" class="bg-yellow-500 text-white px-3 py-1 rounded mr-2">Editar</button>
     <button @click="eliminarAsociado(asociado.id)" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Eliminar</button>
 </td>
                     </tr>
