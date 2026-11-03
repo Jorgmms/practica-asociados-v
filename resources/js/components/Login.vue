@@ -38,8 +38,8 @@
     </button>
 </form>
 <div class="mt-4 text-center text-sm text-gray-600">
-    ¿No tienes cuenta? 
-    <router-link to="/register" class="text-green-600 hover:underline">Regístrate aquí</router-link>
+    ¿Aún no eres asociado? 
+    <router-link to="/register" class="text-green-600 hover:underline font-bold">Solicita tu afiliación aquí</router-link>
 </div>
         </div>
     </div>
@@ -48,10 +48,10 @@
 <script setup>
 import { ref } from 'vue';
 import axios from 'axios';
-import { useRouter } from 'vue-router'; // Importamos para redirigir
+import { useRouter } from 'vue-router'; 
 
-const email = ref(''); // Dejamos el correo por defecto para hacer pruebas rápido
-const password = ref('');      // Y la contraseña
+const email = ref(''); 
+const password = ref('');      
 const error = ref('');
 const cargando = ref(false);
 const router = useRouter(); // Herramienta para cambiar de pantalla
@@ -66,29 +66,36 @@ const handleLogin = async () => {
             password: password.value
         });
 
-        // Guardamos el token y el rol
+        // Guardamos los datos en el navegador
         localStorage.setItem('token', response.data.access_token);
         localStorage.setItem('user_role', response.data.user.role);
-        localStorage.setItem('user_name', response.data.user.name); // <-- NUEVA LÍNEA
+        localStorage.setItem('user_name', response.data.user.name);
 
-        // Redirección según el rol
-        if (response.data.user.role === 'admin') {
+        // LÓGICA DE REDIRECCIÓN (Solo una vez)
+        if (response.data.must_change_password) {
+            // Si el Backend dice que debe cambiarla, lo mandamos ahí
+            router.push('/cambiar-password');
+        } else if (response.data.user.role === 'admin') {
+            // Si es admin, a la tabla
             router.push('/asociados');
         } else {
+            // Si es asociado (y ya cambió su contraseña), a su perfil
             router.push('/perfil');
         }
 
-        // Redirección según el rol
-        if (response.data.user.role === 'admin') {
-            router.push('/asociados');
+        } catch (err) {
+        if (err.response) {
+            // Si el Backend respondió con un error (401, 403, etc.)
+            if (err.response.status === 401) {
+                error.value = 'Credenciales incorrectas. Verifica tu correo y contraseña.';
+            } else if (err.response.status === 403) {
+                // Aquí atrapamos el error de contraseña expirada
+                error.value = err.response.data.message; 
+            } else {
+                error.value = 'Error del servidor. Intenta de nuevo';
+            }
         } else {
-            router.push('/perfil'); // <-- Si es asociado, va a su perfil
-        }
-
-    } catch (err) {
-        if (err.response && err.response.status === 401) {
-            error.value = 'Credenciales incorrectas. Verifica tu correo y contraseña.';
-        } else {
+            // Si no hay respuesta (Laravel está apagado o ESET bloqueó)
             error.value = 'Error de conexión con el servidor.';
         }
     } finally {
