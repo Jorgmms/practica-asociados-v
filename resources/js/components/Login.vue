@@ -20,7 +20,7 @@
             autocomplete="off" 
         >
     </div>
-    
+
     <div class="mb-6">
         <label class="block text-gray-700 text-sm font-bold mb-2">Contraseñaa</label>
         <input 
@@ -37,6 +37,10 @@
         {{ cargando ? 'Ingresando...' : 'Ingresar' }}
     </button>
 </form>
+<div class="mt-4 text-center text-sm text-gray-600">
+    ¿No tienes cuenta? 
+    <router-link to="/register" class="text-green-600 hover:underline">Regístrate aquí</router-link>
+</div>
         </div>
     </div>
 </template>
@@ -57,21 +61,31 @@ const handleLogin = async () => {
     error.value = '';
 
     try {
-        // Hacemos la petición POST a tu backend
         const response = await axios.post('http://127.0.0.1:8000/api/login', {
             email: email.value,
             password: password.value
         });
 
-        // Si todo sale bien, guardamos el Token en el navegador (localStorage)
-        const token = response.data.access_token;
-        localStorage.setItem('token', token);
+        // Guardamos el token y el rol
+        localStorage.setItem('token', response.data.access_token);
+        localStorage.setItem('user_role', response.data.user.role);
+        localStorage.setItem('user_name', response.data.user.name); // <-- NUEVA LÍNEA
 
-        // Redirigimos al usuario a la pantalla de Asociados
-        router.push('/asociados');
+        // Redirección según el rol
+        if (response.data.user.role === 'admin') {
+            router.push('/asociados');
+        } else {
+            router.push('/perfil');
+        }
+
+        // Redirección según el rol
+        if (response.data.user.role === 'admin') {
+            router.push('/asociados');
+        } else {
+            router.push('/perfil'); // <-- Si es asociado, va a su perfil
+        }
 
     } catch (err) {
-        // Si hay error, mostramos el mensaje
         if (err.response && err.response.status === 401) {
             error.value = 'Credenciales incorrectas. Verifica tu correo y contraseña.';
         } else {

@@ -8,6 +8,7 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
+    // 1. FUNCIÓN DE LOGIN
     public function login(Request $request)
     {
         $request->validate([
@@ -24,11 +25,39 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->firstOrFail();
         $token = $user->createToken('auth_token')->plainTextToken;
 
-
         return response()->json([
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'user' => $user
+            'user' => $user // Aquí viaja el rol del usuario
         ]);
+    }
+
+    // 2. FUNCIÓN DE REGISTRO
+    public function register(Request $request)
+    {
+        // Validamos los datos
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6',
+        ]);
+
+        // Creamos el usuario con el rol de 'asociado' por defecto
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'role' => 'asociado', // <-- Aquí se asigna el rol
+        ]);
+
+        // Generamos su token automáticamente
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Usuario registrado con éxito',
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'user' => $user
+        ], 201);
     }
 }

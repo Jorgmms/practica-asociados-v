@@ -3,17 +3,17 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AsociadoController;
-use App\Http\Controllers\AuthController; // <-- Movido arriba
+use App\Http\Controllers\AuthController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-// ruta del CRUD de asociados
-// Ruta pública (no necesita token)
+// --- RUTAS PÚBLICAS ---
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/register', [AuthController::class, 'register']); 
 
-// Rutas protegidas (solo con token)
+// --- RUTAS PROTEGIDAS ---
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('asociados', AsociadoController::class);
 });
