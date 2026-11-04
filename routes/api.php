@@ -28,6 +28,8 @@ Route::middleware('auth:sanctum')->group(function () {
     //Ruta de aprobar una solicitud (Solo el Admin debería poder usar esto)
     Route::post('/solicitudes/{id}/aprobar', [SolicitudController::class, 'aprobar']);
 
-    // Ruta para cambiar la contraseña (solo el usuario autenticado)
+    // Ruta para cambiar la contraseña (solo el usuario autenticado)            
     Route::post('/cambiar-password', [AuthController::class, 'cambiarPassword']);
+
+    Route::get('/dashboard-stats', [\App\Http\Controllers\DashboardController::class, 'index']);
 });

@@ -5,6 +5,7 @@ import Register from './components/Register.vue';
 import Perfil from './components/Perfil.vue';
 import Solicitudes from './components/Solicitudes.vue'; 
 import CambiarPassword from './components/CambiarPassword.vue';
+import Dashboard from './components/Dashboard.vue';
 
 const routes = [
     { path: '/', redirect: '/login' },
@@ -26,7 +27,6 @@ const routes = [
             if (token) next(); else next('/login');
         }
     },
-    
     { 
         path: '/solicitudes', 
         component: Solicitudes,
@@ -35,12 +35,19 @@ const routes = [
             if (token) next(); else next('/login');
         }
     },
-
     { 
         path: '/cambiar-password', 
         component: CambiarPassword,
         beforeEnter: (to, from, next) => {
-        if (localStorage.getItem('token')) next(); else next('/login');
+            if (localStorage.getItem('token')) next(); else next('/login');
+        }
+    }, // <-- ¡AQUÍ FALTABA LA COMA!
+    {   
+        path: '/dashboard', 
+        component: Dashboard,
+        beforeEnter: (to, from, next) => {
+            const token = localStorage.getItem('token');
+            if (token) next(); else next('/login');
         }
     }
 ];

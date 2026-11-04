@@ -77,7 +77,7 @@ const handleLogin = async () => {
             router.push('/cambiar-password');
         } else if (response.data.user.role === 'admin') {
             // Si es admin, a la tabla
-            router.push('/asociados');
+            router.push('/dashboard');
         } else {
             // Si es asociado (y ya cambió su contraseña), a su perfil
             router.push('/perfil');

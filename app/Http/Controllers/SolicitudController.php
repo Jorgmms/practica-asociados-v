@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Solicitud;
+use App\Services\SolicitudService;
 
 class SolicitudController extends Controller
 {
@@ -65,7 +66,7 @@ class SolicitudController extends Controller
     // 4. Marcar solicitud como aprobada
     $solicitud->update(['estado' => 'aprobado']);
 
-    // 🚨 SIMULACIÓN DE ENVÍO DE CORREO
+    // SIMULACIÓN DE ENVÍO DE CORREO
     // En lugar de enviarlo a Vue, lo escribimos en el log de Laravel.
     \Illuminate\Support\Facades\Log::info("CORREO ENVIADO A: {$user->email} | Usuario: {$user->email} | Contraseña Temporal: {$passwordTemporal}");
 
