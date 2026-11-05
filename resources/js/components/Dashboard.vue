@@ -23,13 +23,6 @@
             </div>
         </div>
 
-        <!-- Gráfico -->
-       <div class="bg-white p-6 rounded-lg shadow-lg w-full md:w-2/3 mx-auto">
-    <h3 class="text-xl font-bold text-gray-700 mb-4 text-center">Resumen Visual</h3>
-    <!-- Usamos un canvas nativo de HTML -->
-    <canvas id="myChart" style="height: 300px;"></canvas>
-</div>
-
         <!-- Botón para ir a Asociados -->
         <div class="mt-8 text-center">
             <router-link to="/asociados" class="bg-gray-800 text-white px-6 py-2 rounded hover:bg-gray-900">
@@ -46,54 +39,17 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const stats = ref({ asociados: 0, solicitudes: 0, usuarios: 0 });
-const chartRef = ref(null); // Referencia al canvas
-let myChart = null; // Variable para guardar la instancia del gráfico
 
-// Cargar estadísticas
 const cargarStats = async () => {
     try {
         const token = localStorage.getItem('token');
         const response = await axios.get('http://127.0.0.1:8000/api/dashboard-stats', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        
         stats.value = response.data;
-        
-        // Una vez que tenemos los datos, dibujamos el gráfico
-        dibujarGrafico();
-
     } catch (error) {
         console.error("Error al cargar estadísticas:", error);
     }
-};
-
-// Función para dibujar el gráfico usando Chart.js del CDN
-const dibujarGrafico = () => {
-    const ctx = document.getElementById('myChart');
-    if (!ctx) return;
-
-    // Si ya existe un gráfico, lo destruimos para no duplicarlo
-    if (myChart) {
-        myChart.destroy();
-    }
-
-    // Usamos la variable global "Chart" que viene del CDN
-    myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Asociados', 'Solicitudes', 'Usuarios'],
-            datasets: [{
-                label: 'Cantidad Total',
-                data: [stats.value.asociados, stats.value.solicitudes, stats.value.usuarios],
-                backgroundColor: ['#3b82f6', '#eab308', '#22c55e'],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false
-        }
-    });
 };
 
 const cerrarSesion = () => {
