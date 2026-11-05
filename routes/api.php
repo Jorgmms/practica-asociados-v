@@ -19,17 +19,21 @@ Route::post('/solicitudes/{id}/aprobar', [SolicitudController::class, 'aprobar']
 
 // --- RUTAS PROTEGIDAS (Solo con Token) ---
 Route::middleware('auth:sanctum')->group(function () {
-    // CRUD de asociados (Solo el Admin debería poder usar esto, pero por ahora lo dejamos así)
-    Route::apiResource('asociados', AsociadoController::class);
     
-    // Ruta para que el Admin vea las solicitudes pendientes
-    Route::get('/solicitudes', [SolicitudController::class, 'index']);
+    // Rutas de Dashboard (Solo Admins)
+    Route::get('/dashboard-stats', [\App\Http\Controllers\DashboardController::class, 'index'])
+        ->middleware('permission:ver-dashboard-admin');
 
-    //Ruta de aprobar una solicitud (Solo el Admin debería poder usar esto)
-    Route::post('/solicitudes/{id}/aprobar', [SolicitudController::class, 'aprobar']);
+    // Rutas de Asociados
+    Route::get('/asociados', [AsociadoController::class, 'index']); // Todos pueden ver (ajustaremos luego)
+    Route::post('/asociados', [AsociadoController::class, 'store'])->middleware('permission:crear-asociado');
+    Route::put('/asociados/{id}', [AsociadoController::class, 'update'])->middleware('permission:editar-asociado');
+    Route::delete('/asociados/{id}', [AsociadoController::class, 'destroy'])->middleware('permission:eliminar-asociado');
 
-    // Ruta para cambiar la contraseña (solo el usuario autenticado)            
+    // Rutas de Solicitudes
+    Route::get('/solicitudes', [SolicitudController::class, 'index'])->middleware('permission:ver-solicitudes');
+    Route::post('/solicitudes/{id}/aprobar', [SolicitudController::class, 'aprobar'])->middleware('permission:aprobar-solicitud');
+
+    // Ruta para cambiar contraseña (Cualquier usuario autenticado)
     Route::post('/cambiar-password', [AuthController::class, 'cambiarPassword']);
-
-    Route::get('/dashboard-stats', [\App\Http\Controllers\DashboardController::class, 'index']);
 });
